@@ -64,3 +64,6 @@ dmypy.json
 # Misc
 *.log
 *.pot
+cookiejar
+API_EXAMPLES.md
+FRONTEND_API_SPEC.md
