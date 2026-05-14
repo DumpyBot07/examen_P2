@@ -76,6 +76,7 @@ async function handleLogin(e) {
 
     const response = await fetch(`${API_URL}/token`, {
       method: "POST",
+      credentials: "include", // Incluir cookies en la respuesta
       body: formData,
     });
 
@@ -107,9 +108,17 @@ async function handleLogin(e) {
  */
 async function handleMostrarInfo() {
   try {
+    const token = localStorage.getItem("access_token");
+
+    if (!token) {
+      throw new Error("No hay token guardado. Por favor inicia sesión primero");
+    }
+
     const response = await fetch(`${API_URL}/users/me`, {
       method: "GET",
-      credentials: "include", // Incluir cookies
+      headers: {
+        "Authorization": `Bearer ${token}`,
+      },
     });
 
     const data = await response.json();
@@ -182,13 +191,24 @@ window.addEventListener("DOMContentLoaded", () => {
  */
 async function checkAuthentication() {
   try {
+    const token = localStorage.getItem("access_token");
+    
+    if (!token) {
+      return; // No hay token guardado
+    }
+
     const response = await fetch(`${API_URL}/users/me`, {
       method: "GET",
-      credentials: "include",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+      },
     });
 
     if (response.ok) {
       mostrarAlerta("✅ Ya estás autenticado", "info");
+    } else {
+      // Token expirado, limpiar
+      localStorage.removeItem("access_token");
     }
   } catch (error) {
     // Usuario no autenticado, es normal
