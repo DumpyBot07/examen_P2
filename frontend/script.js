@@ -117,7 +117,7 @@ async function handleMostrarInfo() {
     const response = await fetch(`${API_URL}/users/me`, {
       method: "GET",
       headers: {
-        "Authorization": `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
     });
 
@@ -192,7 +192,7 @@ window.addEventListener("DOMContentLoaded", () => {
 async function checkAuthentication() {
   try {
     const token = localStorage.getItem("access_token");
-    
+
     if (!token) {
       return; // No hay token guardado
     }
@@ -200,7 +200,7 @@ async function checkAuthentication() {
     const response = await fetch(`${API_URL}/users/me`, {
       method: "GET",
       headers: {
-        "Authorization": `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
     });
 
