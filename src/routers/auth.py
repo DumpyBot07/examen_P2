@@ -44,7 +44,6 @@ async def login_for_access_token(response: Response, form_data: OAuth2PasswordRe
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect username or password")
 
     if not verify_password(password, user.password_hashed):
-        # run dummy verify to equalize timing
         dummy_verify(password)
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect username or password")
 
