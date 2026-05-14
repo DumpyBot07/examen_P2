@@ -6,7 +6,6 @@ const registroForm = document.getElementById("registro-form");
 const loginForm = document.getElementById("login-form");
 const mostrarInfoBtn = document.getElementById("mostrar-info-btn");
 const usuarioInfo = document.getElementById("usuario-info");
-const alertContainer = document.getElementById("alert-container");
 
 // Event Listeners
 registroForm.addEventListener("submit", handleRegistro);
@@ -24,7 +23,7 @@ async function handleRegistro(e) {
   const password = document.getElementById("password").value;
 
   if (!nombre || !username || !password) {
-    mostrarAlerta("Por favor completa todos los campos", "error");
+    alert("Por favor completa todos los campos");
     return;
   }
 
@@ -47,10 +46,10 @@ async function handleRegistro(e) {
       throw new Error(data.detail || "Error al crear el usuario");
     }
 
-    mostrarAlerta(`✅ Usuario ${data.nombre} creado exitosamente`, "success");
+    alert("Usuario " + data.nombre + " creado exitosamente");
     registroForm.reset();
   } catch (error) {
-    mostrarAlerta(`❌ Error: ${error.message}`, "error");
+    alert("Error: " + error.message);
   }
 }
 
@@ -64,7 +63,7 @@ async function handleLogin(e) {
   const password = document.getElementById("login-password").value;
 
   if (!username || !password) {
-    mostrarAlerta("Por favor completa todos los campos", "error");
+    alert("Por favor completa todos los campos");
     return;
   }
 
@@ -93,13 +92,10 @@ async function handleLogin(e) {
     localStorage.setItem("access_token", token);
 
     // La cookie se establece automáticamente por el navegador
-    mostrarAlerta(
-      `✅ Usuario autenticado exitosamente\n\nToken: ${token.substring(0, 30)}...`,
-      "success",
-    );
+    alert("Usuario autenticado exitosamente");
     loginForm.reset();
   } catch (error) {
-    mostrarAlerta(`❌ ${error.message}`, "error");
+    alert(error.message);
   }
 }
 
@@ -111,7 +107,8 @@ async function handleMostrarInfo() {
     const token = localStorage.getItem("access_token");
 
     if (!token) {
-      throw new Error("No hay token guardado. Por favor inicia sesión primero");
+      alert("No hay token guardado. Por favor inicia sesión primero");
+      return;
     }
 
     const response = await fetch(`${API_URL}/users/me`, {
@@ -143,40 +140,11 @@ async function handleMostrarInfo() {
     // Mostrar la sección de información
     usuarioInfo.classList.remove("hidden");
 
-    mostrarAlerta(`✅ Información del usuario cargada`, "info");
+    alert("Información del usuario cargada");
   } catch (error) {
     usuarioInfo.classList.add("hidden");
-    mostrarAlerta(`❌ ${error.message}`, "error");
+    alert(error.message);
   }
-}
-
-/**
- * Muestra una alerta en pantalla
- * @param {string} mensaje - El mensaje a mostrar
- * @param {string} tipo - Tipo de alerta: 'success', 'error', 'info'
- */
-function mostrarAlerta(mensaje, tipo = "info") {
-  const alert = document.createElement("div");
-  alert.className = `alert alert-${tipo}`;
-
-  const mensajeDiv = document.createElement("div");
-  mensajeDiv.textContent = mensaje;
-
-  const closeBtn = document.createElement("button");
-  closeBtn.className = "alert-close";
-  closeBtn.textContent = "×";
-  closeBtn.onclick = () => alert.remove();
-
-  alert.appendChild(mensajeDiv);
-  alert.appendChild(closeBtn);
-
-  alertContainer.appendChild(alert);
-
-  // Remover automáticamente después de 5 segundos
-  setTimeout(() => {
-    alert.style.animation = "slideInRight 0.4s ease-out reverse";
-    setTimeout(() => alert.remove(), 400);
-  }, 5000);
 }
 
 /**
@@ -205,7 +173,7 @@ async function checkAuthentication() {
     });
 
     if (response.ok) {
-      mostrarAlerta("✅ Ya estás autenticado", "info");
+      alert("Ya estás autenticado");
     } else {
       // Token expirado, limpiar
       localStorage.removeItem("access_token");
