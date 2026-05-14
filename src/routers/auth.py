@@ -10,11 +10,9 @@ from pwdlib import PasswordHash
 
 router = APIRouter()
 
-# single PasswordContext instance using Argon2
-# use the recommended PasswordHash (Argon2)
+
 _pwd_ctx = PasswordHash.recommended()
 
-# precompute a dummy hash to use for timing-attack mitigation
 DUMMY_HASH = _pwd_ctx.hash("dummy_password_for_timing")
 
 
@@ -27,11 +25,9 @@ def verify_password(plain: str, hashed: str) -> bool:
 
 
 def dummy_verify(password: str):
-    # verify against a precomputed dummy hash to normalize timing
     try:
         _pwd_ctx.verify(password, DUMMY_HASH)
     except Exception:
-        # ignore errors; goal is to spend time hashing
         pass
 
 
@@ -55,7 +51,6 @@ async def login_for_access_token(response: Response, form_data: OAuth2PasswordRe
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(data={"sub": user.username}, expires_delta=access_token_expires)
 
-    # set HttpOnly cookie
     response.set_cookie(key="access_token", value=f"Bearer {access_token}", httponly=True, max_age=int(access_token_expires.total_seconds()), samesite="lax")
 
     return {"access_token": access_token, "token_type": "bearer"}

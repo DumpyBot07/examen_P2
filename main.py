@@ -11,7 +11,6 @@ load_dotenv()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-	# create tables at startup
 	SQLModel.metadata.create_all(engine)
 	yield
 
