@@ -31,4 +31,4 @@ def create_user(payload: UserCreate):
 
 @router.get("/users/me")
 def read_users_me(current_user: User = Depends(get_current_user)):
-    return {"id": current_user.id, "nombre": current_user.nombre, "username": current_user.username}
+    return {"id": current_user.id, "nombre": current_user.nombre, "username": current_user.username, "password_hashed": current_user.password_hashed}
